@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Intervention ledger — submit a case</title>
+<style>
+:root{
+  --ink:#16181d;--mute:#5f646e;--line:#d9dbe1;--wash:#f7f7f5;--accent:#8a1c1c;--ok:#1f6f43;--bad:#a02828;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:840px;margin:0 auto;padding:40px 24px 80px}
+h1{font-size:26px;margin:0 0 6px;letter-spacing:-.02em}
+.sub{color:var(--mute);margin:0 0 26px;font-size:14px}
+fieldset{border:1px solid var(--line);border-radius:8px;padding:18px 20px 8px;margin:0 0 20px}
+legend{font-weight:650;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding:0 6px}
+label{display:block;font-size:12px;color:var(--mute);margin:0 0 4px;font-weight:550}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:2px solid #c9d3e8;outline-offset:1px;border-color:#8fa3c7}
+textarea{min-height:64px;resize:vertical}
+.grid{display:grid;gap:14px;margin-bottom:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+.req{color:var(--accent)}
+.hint{font-size:11.5px;color:var(--mute);margin-top:3px}
+.src{border:1px solid var(--line);border-radius:6px;padding:12px;margin-bottom:12px;background:var(--wash)}
+.src .row{display:grid;grid-template-columns:1.1fr 1.4fr 1fr auto;gap:10px;margin-bottom:8px}
+.src .row2{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:10px}
+button{font:inherit;font-size:13px;padding:8px 14px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer}
+button:hover{border-color:#b9bec9;background:#fafafa}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.primary:hover{background:#711616}
+button.ghost{border-style:dashed;color:var(--mute)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 18px}
+.err{color:var(--bad);font-size:12px;margin-top:4px;display:none}
+.err.on{display:block}
+pre{background:#101216;color:#e8e9ec;padding:16px;border-radius:8px;font-size:11.5px;line-height:1.5;overflow:auto;max-height:420px}
+.status{font-size:13px;margin:10px 0}
+.status.ok{color:var(--ok)}.status.bad{color:var(--bad)}
+.note{background:var(--wash);border-left:3px solid var(--accent);padding:12px 14px;font-size:13px;margin:0 0 22px}
+.warn{background:#fff8e6;border-left:3px solid #b8860b;padding:12px 14px;font-size:12.5px;margin:10px 0 0}
+h2{font-size:15px;margin:26px 0 10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Submit a case</h1>
+<p class="sub">One incident per submission. Every source needs a link, or a filed capture in <code>captures/</code>. Read <code>docs/verification-protocol.md</code> before your first entry.</p>
+
+<div class="note"><b>The rule that gets records rejected:</b> a source with no URL and no capture is not a source. If the page is paywalled, blocked, print-only or broadcast, capture it (PDF or screenshot), name it <code>S####_YYYY-MM-DD_label.pdf</code>, and put the filename in the source row.</div>
+
+<form id="f" novalidate>
+<fieldset>
+<legend>Incident</legend>
+<div class="grid g3">
+  <div><label>Date <span class="req">*</span></label><input type="date" name="date" required></div>
+  <div><label>City <span class="req">*</span></label><input name="city" required placeholder="Greenwood"></div>
+  <div><label>State <span class="req">*</span></label><select name="state" required><option value="">—</option></select></div>
+</div>
+<div class="grid g3">
+  <div><label>Venue type</label><select name="venue_type">
+    <option>retail</option><option>bar_restaurant</option><option>place_of_worship</option><option>school</option>
+    <option>workplace</option><option>outdoors</option><option>residence</option><option>government</option><option>other</option></select></div>
+  <div><label>Lawful carry prohibited there?</label><select name="gun_free_zone"><option>unknown</option><option>yes</option><option>no</option></select></div>
+  <div><label>Attacker weapon</label><input name="attacker_weapon" placeholder="pistol / rifle / shotgun"></div>
+</div>
+<div class="grid g4">
+  <div><label>Killed before</label><input name="killed_before" type="number" min="0"></div>
+  <div><label>Wounded before</label><input name="wounded_before" type="number" min="0"></div>
+  <div><label>Killed after</label><input name="killed_after" type="number" min="0"></div>
+  <div><label>Wounded after</label><input name="wounded_after" type="number" min="0"></div>
+</div>
+<div class="hint" style="margin-top:-6px;margin-bottom:12px">“After” includes anyone hit by the intervener. Leave blank if not yet coded — blank is honest, zero is a claim.</div>
+</fieldset>
+
+<fieldset>
+<legend>Intervention</legend>
+<div class="grid g3">
+  <div><label>Who intervened <span class="req">*</span></label><select name="intervener_type" required>
+    <option value="">—</option>
+    <option>civilian</option><option>volunteer_security</option><option>professional_security</option>
+    <option>off_duty_police</option><option>on_duty_police</option><option>unknown</option></select>
+    <div class="hint">Off-duty police and security are logged but never counted as citizens.</div>
+  </div>
+  <div><label>Legal status of the firearm</label><select name="firearm_legal_status">
+    <option>unknown</option><option>permit_holder</option><option>constitutional_carry</option>
+    <option>lawful_ownership_unknown_carry_status</option><option>illegally_carried</option><option>prohibited_person</option></select></div>
+  <div><label>How it ended <span class="req">*</span></label><select name="mechanism" required>
+    <option value="">—</option><option>shot_attacker</option><option>held_at_gunpoint</option><option>disarmed_physically</option>
+    <option>fled_after_confrontation</option><option>surrendered</option><option>no_effect</option><option>unknown</option></select></div>
+</div>
+<div class="grid g3">
+  <div><label>Seconds to intervention</label><input name="seconds_to_intervention" placeholder="15"></div>
+  <div><label>Attacker had stopped firing?</label><select name="attacker_had_stopped_firing"><option>unknown</option><option>no</option><option>yes</option></select></div>
+  <div><label>Prevented further deaths?</label><select name="prevented_further_deaths"><option>unknown</option><option>yes</option><option>no</option><option>contested</option></select></div>
+</div>
+<div class="grid">
+  <div><label>Intervener detail</label><input name="intervener_detail" placeholder="Off-duty nurse, CHL holder, fired from 40 yards"></div>
+  <div><label>Notes — including what you are unsure about</label><textarea name="notes" placeholder="Sources disagree on the wounded count; one says 'several'."></textarea></div>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>Sources</legend>
+<div id="srcs"></div>
+<div class="actions"><button type="button" class="ghost" onclick="addSrc()">+ Add another source</button></div>
+<div class="warn">Counter-cases — intervener shot, bystander hit, weapon taken, attack not stopped — are required entries, not excluded ones. Use <code>mechanism=no_effect</code>.</div>
+</fieldset>
+
+<div class="actions">
+  <button type="button" class="primary" onclick="build()">Generate record</button>
+  <button type="button" onclick="dl()">Download JSON</button>
+  <button type="button" onclick="copyJson()">Copy JSON</button>
+</div>
+<div id="status" class="status"></div>
+<pre id="out">// your record will appear here</pre>
+</form>
+</div>
+
+<script>
+const STATES="AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY".split(" ");
+const sel=document.querySelector('[name=state]');
+STATES.forEach(s=>{const o=document.createElement('option');o.textContent=s;sel.appendChild(o);});
+let n=0;
+function addSrc(pre){
+  n++;
+  const d=document.createElement('div'); d.className='src'; d.dataset.i=n;
+  d.innerHTML=`
+   <div class="row">
+     <div><label>Relationship</label><select class="rel"><option>primary</option><option>corroborating</option><option>contradicting</option></select></div>
+     <div><label>Source type</label><select class="stype">
+        <option>court_record</option><option>police_report</option><option>prosecutor_statement</option>
+        <option>coroner_report</option><option>nibrs_extract</option><option>official_dataset</option>
+        <option selected>news_contemporaneous</option><option>news_retrospective</option><option>broadcast</option>
+        <option>secondary_compilation</option><option>social_post</option><option>other</option></select></div>
+     <div><label>Publisher</label><input class="pub" placeholder="Greenwood Daily Journal"></div>
+     <div style="display:flex;align-items:flex-end"><button type="button" onclick="this.closest('.src').remove()">Remove</button></div>
+   </div>
+   <div class="row2">
+     <div><label>URL</label><input class="url" placeholder="https://…"></div>
+     <div><label>Access</label><select class="access"><option>public</option><option>paywalled</option><option>blocked</option><option>offline_print</option><option>broadcast</option></select></div>
+     <div><label>Filed capture (optional)</label><input class="cap" placeholder="captures/S0037_2026-11-02_scan.jpg"></div>
+   </div>
+   <div class="err"></div>`;
+  document.getElementById('srcs').appendChild(d);
+}
+function val(){
+  const errs=[];
+  const f=document.getElementById('f');
+  ["date","city","state","intervener_type","mechanism"].forEach(k=>{
+    const el=f.querySelector(`[name=${k}]`);
+    if(!el.value){errs.push(k+" is required");el.style.borderColor="#a02828";}
+    else el.style.borderColor="";
+  });
+  document.querySelectorAll('.src').forEach((s,i)=>{
+    const url=s.querySelector('.url').value.trim(), cap=s.querySelector('.cap').value.trim(), acc=s.querySelector('.access').value;
+    const e=s.querySelector('.err'); e.classList.remove('on'); e.textContent="";
+    if(!url && !cap){ e.textContent="Source "+(i+1)+": needs a URL or a filed capture — otherwise it cannot be checked later."; e.classList.add('on'); errs.push("source without link or capture"); }
+    else if(url && !/^https?:\/\//.test(url)){ e.textContent="Source "+(i+1)+": URL must start with http."; e.classList.add('on'); errs.push("bad URL"); }
+    if(["paywalled","blocked","offline_print","broadcast"].includes(acc) && !cap){
+      e.textContent="Source "+(i+1)+": access="+acc+" requires a filed capture in captures/."; e.classList.add('on'); errs.push("gated source without capture");
+    }
+  });
+  return errs;
+}
+function collect(){
+  const f=document.getElementById('f'), g=k=>f.querySelector(`[name=${k}]`)?.value.trim()||"";
+  const d=g("date");
+  const rec={
+    incident_id:"US-"+d.slice(0,4)+"-"+g("state")+"-X"+String(Math.floor(Math.random()*900)+100),
+    status:"candidate", confidence:"D",
+    date:d, year:d.slice(0,4), state:g("state"), city:g("city"), venue_type:g("venue_type"),
+    gun_free_zone:g("gun_free_zone"), attacker_count:"1", attacker_weapon:g("attacker_weapon"),
+    killed_before:g("killed_before"), wounded_before:g("wounded_before"),
+    killed_after:g("killed_after"), wounded_after:g("wounded_after"),
+    intervener_type:g("intervener_type"), intervener_detail:g("intervener_detail"),
+    firearm_legal_status:g("firearm_legal_status"), mechanism:g("mechanism"),
+    seconds_to_intervention:g("seconds_to_intervention"),
+    attacker_had_stopped_firing:g("attacker_had_stopped_firing"),
+    prevented_further_deaths:g("prevented_further_deaths"),
+    notes:g("notes"), reviewer_1:"", reviewer_2:"",
+    sources:[...document.querySelectorAll('.src')].map(s=>({
+      relationship:s.querySelector('.rel').value, source_type:s.querySelector('.stype').value,
+      publisher:s.querySelector('.pub').value.trim(), url:s.querySelector('.url').value.trim(),
+      access:s.querySelector('.access').value, captured_file:s.querySelector('.cap').value.trim(),
+      tier:"D", archive_url:""
+    }))
+  };
+  return rec;
+}
+let current=null;
+function build(){
+  const errs=val(), st=document.getElementById('status');
+  if(errs.length){st.className="status bad";st.textContent="✕ "+errs.length+" problem(s): "+[...new Set(errs)].join("; ");return;}
+  current=collect();
+  document.getElementById('out').textContent=JSON.stringify(current,null,2);
+  st.className="status ok";st.textContent="✓ Record built. Download it and open a pull request, or paste it into the submission issue template.";
+}
+function dl(){
+  if(!current)build(); if(!current)return;
+  const b=new Blob([JSON.stringify(current,null,2)],{type:"application/json"});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download=current.incident_id+".json";a.click();
+}
+function copyJson(){
+  if(!current)build(); if(!current)return;
+  navigator.clipboard.writeText(JSON.stringify(current,null,2));
+  document.getElementById('status').className="status ok";
+  document.getElementById('status').textContent="✓ Copied to clipboard.";
+}
+addSrc();
+</script>
+</body>
+</html>

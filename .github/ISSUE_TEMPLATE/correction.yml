@@ -1,0 +1,58 @@
+name: Challenge a record
+description: Report an error, a miscoding, or a dead source in an existing record
+title: "[correction] "
+labels: ["correction", "disputed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Corrections are the point of this project. A record that is wrong gets changed, not deleted — the change is logged in `data/adjudication_log.csv`.
+
+  - type: input
+    id: record
+    attributes:
+      label: Incident ID
+      description: Looks like US-2022-IN-A003. Find it in data/cases.csv.
+      placeholder: "US-2022-IN-A003"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is wrong
+      options:
+        - The intervener was not a civilian
+        - The source does not support the record
+        - The mechanism is miscoded (shot vs fled vs surrendered)
+        - Casualty counts are wrong
+        - The date or location is wrong
+        - The source link is dead and there is no capture
+        - Duplicate of another record
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: detail
+    attributes:
+      label: What the record says, and what is actually true
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: Source for the correction
+      description: URL or filed capture. A correction without a source will be closed.
+      placeholder: "https://..."
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I have a source, not just a recollection.
+          required: true

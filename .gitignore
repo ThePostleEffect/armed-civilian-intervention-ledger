@@ -1,0 +1,22 @@
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editor
+.vscode/
+.idea/
+*.swp
+
+# scratch
+*.tmp
+scratch/
+
+# NOTE: captures/ is deliberately NOT ignored — the filed PDFs and screenshots
+# are the archive. They must be committed, or the sources cannot be checked later.

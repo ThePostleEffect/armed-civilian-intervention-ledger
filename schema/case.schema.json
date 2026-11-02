@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Armed Civilian Intervention (ACI) case record",
+  "description": "One record = one incident. Sources are NOT stored here: every incident has one or more rows in data/sources.csv (see schema/source.schema.json). A record with no source row is invalid.",
+  "type": "object",
+  "required": [
+    "incident_id",
+    "status",
+    "confidence",
+    "date",
+    "state",
+    "city",
+    "intervener_type",
+    "mechanism"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "incident_id": {
+      "type": "string",
+      "pattern": "^US-[0-9]{4}-[A-Z]{2}-[A-Z][0-9]{3}$",
+      "description": "US-<year>-<state>-<sourceprefix><nnn>. Prefix A=ALERRT, D=independent news sweep, E=secondary list."
+    },
+    "status": {
+      "enum": [
+        "candidate",
+        "verified",
+        "disputed",
+        "excluded"
+      ],
+      "description": "Only 'verified' records may be used in published counts."
+    },
+    "confidence": {
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ],
+      "description": "A=primary record (court/police/prosecutor/coroner); B=official dataset (FBI/ALERRT); C=two or more independent news sources; D=single news source; E=secondary compilation only. Verified requires A, B or C."
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "year": {
+      "type": "string",
+      "pattern": "^[0-9]{4}$"
+    },
+    "state": {
+      "type": "string",
+      "pattern": "^(AL|AK|AZ|AR|CA|CO|CT|DE|DC|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY)$"
+    },
+    "city": {
+      "type": "string",
+      "minLength": 2
+    },
+    "venue_type": {
+      "enum": [
+        "retail",
+        "bar_restaurant",
+        "place_of_worship",
+        "school",
+        "workplace",
+        "outdoors",
+        "residence",
+        "government",
+        "other",
+        ""
+      ]
+    },
+    "gun_free_zone": {
+      "enum": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "description": "Was lawful carry prohibited at the location at the time? Drives the sub-analysis of intervention rates where carry is allowed."
+    },
+    "attacker_count": {
+      "type": "string"
+    },
+    "attacker_weapon": {
+      "type": "string"
+    },
+    "killed_before": {
+      "type": "string",
+      "description": "Deaths before the intervention took effect. Blank = not yet coded."
+    },
+    "wounded_before": {
+      "type": "string"
+    },
+    "killed_after": {
+      "type": "string",
+      "description": "Deaths after the intervention took effect, INCLUDING any caused by the intervener."
+    },
+    "wounded_after": {
+      "type": "string"
+    },
+    "intervener_type": {
+      "enum": [
+        "civilian",
+        "volunteer_security",
+        "professional_security",
+        "off_duty_police",
+        "on_duty_police",
+        "unknown",
+        "citizen_claimed"
+      ],
+      "description": "'citizen_claimed' is a placeholder for secondary-list records not yet resolved. Only civilian and volunteer_security count toward the citizen total."
+    },
+    "intervener_detail": {
+      "type": "string",
+      "description": "Role, permit status, how armed, occupation if relevant."
+    },
+    "firearm_legal_status": {
+      "enum": [
+        "permit_holder",
+        "constitutional_carry",
+        "lawful_ownership_unknown_carry_status",
+        "prohibited_person",
+        "illegally_carried",
+        "claimed_legal",
+        "unknown"
+      ]
+    },
+    "mechanism": {
+      "enum": [
+        "shot_attacker",
+        "held_at_gunpoint",
+        "disarmed_physically",
+        "fled_after_confrontation",
+        "surrendered",
+        "no_effect",
+        "unknown"
+      ],
+      "description": "How the intervention ended the attack. 'no_effect' is mandatory for counter-cases."
+    },
+    "seconds_to_intervention": {
+      "type": "string",
+      "description": "Seconds from first shot to intervener action, where documented."
+    },
+    "attacker_had_stopped_firing": {
+      "enum": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "description": "Had the attacker already ceased firing when the intervention occurred? Separates death-prevention from ending an escape."
+    },
+    "prevented_further_deaths": {
+      "enum": [
+        "yes",
+        "no",
+        "unknown",
+        "contested"
+      ],
+      "description": "Coders must justify; 'yes' requires evidence the attacker had capacity and intent to continue."
+    },
+    "reviewer_1": {
+      "type": "string"
+    },
+    "reviewer_2": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 600
+    }
+  }
+}

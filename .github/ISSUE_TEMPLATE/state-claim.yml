@@ -1,0 +1,104 @@
+name: Claim a state
+description: Volunteer to sweep one state for one year window
+title: "[state] "
+labels: ["state-claim"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One lead per state per window. Read [the state lead playbook](../blob/main/docs/state-lead-playbook.md) first — it covers where the cases hide and includes a records-request template you can send to police and prosecutors.
+
+  - type: dropdown
+    id: state
+    attributes:
+      label: State
+      options:
+        - AL - Alabama
+        - AK - Alaska
+        - AZ - Arizona
+        - AR - Arkansas
+        - CA - California
+        - CO - Colorado
+        - CT - Connecticut
+        - DE - Delaware
+        - DC - District of Columbia
+        - FL - Florida
+        - GA - Georgia
+        - HI - Hawaii
+        - ID - Idaho
+        - IL - Illinois
+        - IN - Indiana
+        - IA - Iowa
+        - KS - Kansas
+        - KY - Kentucky
+        - LA - Louisiana
+        - ME - Maine
+        - MD - Maryland
+        - MA - Massachusetts
+        - MI - Michigan
+        - MN - Minnesota
+        - MS - Mississippi
+        - MO - Missouri
+        - MT - Montana
+        - NE - Nebraska
+        - NV - Nevada
+        - NH - New Hampshire
+        - NJ - New Jersey
+        - NM - New Mexico
+        - NY - New York
+        - NC - North Carolina
+        - ND - North Dakota
+        - OH - Ohio
+        - OK - Oklahoma
+        - OR - Oregon
+        - PA - Pennsylvania
+        - RI - Rhode Island
+        - SC - South Carolina
+        - SD - South Dakota
+        - TN - Tennessee
+        - TX - Texas
+        - UT - Utah
+        - VT - Vermont
+        - VA - Virginia
+        - WA - Washington
+        - WV - West Virginia
+        - WI - Wisconsin
+        - WY - Wyoming
+    validations:
+      required: true
+
+  - type: dropdown
+    id: window
+    attributes:
+      label: Year window
+      description: Work backwards from 2026. The early years are where the missing cases are.
+      options:
+        - 2020-2026
+        - 2014-2019
+        - 2007-2013
+        - 2000-2006
+        - 1996-1999
+        - All years
+    validations:
+      required: true
+
+  - type: textarea
+    id: plan
+    attributes:
+      label: Where you will look first
+      description: NIBRS extract, prosecutor releases, local paper archive, court portal, TV archive.
+      placeholder: "County prosecutor press releases first, then the two largest local dailies via library access."
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Commitment
+      options:
+        - label: I will log exclusions in data/adjudication_log.csv rather than dropping them.
+          required: true
+        - label: I understand my own submissions cannot be marked verified by me.
+          required: true
+        - label: I will report a null result for my window rather than leave it silently uncovered.
+          required: true

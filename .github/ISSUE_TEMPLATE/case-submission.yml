@@ -1,0 +1,106 @@
+name: Submit a case
+description: Propose one incident where an armed civilian stopped a shooting
+title: "[case] YYYY-MM-DD, City, ST"
+labels: ["case-submission", "needs-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Read [the verification protocol](../blob/main/docs/verification-protocol.md) before submitting.**
+        One incident per issue. Every source needs a URL or a filed capture — a source with neither will be rejected.
+        Counter-cases (intervener shot, bystander hit, weapon taken, attack not stopped) are wanted, not excluded.
+
+  - type: input
+    id: date
+    attributes:
+      label: Date
+      description: ISO format, YYYY-MM-DD.
+      placeholder: "2022-07-17"
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: City and state
+      placeholder: "Greenwood, IN"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: intervener
+    attributes:
+      label: Who intervened
+      options:
+        - civilian (private citizen, no duty status)
+        - volunteer security (unpaid, ordinary permit)
+        - off-duty police
+        - on-duty police
+        - professional security
+        - unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mechanism
+    attributes:
+      label: How the attack ended
+      options:
+        - shot_attacker
+        - held_at_gunpoint
+        - disarmed_physically
+        - fled_after_confrontation
+        - surrendered
+        - no_effect (intervener failed / was shot / hit a bystander)
+        - unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: facts
+    attributes:
+      label: What happened
+      description: Facts only — who fired, how many were hit, how it ended. No commentary.
+      placeholder: "A man opened fire in the food court at 18:00, killing three and wounding two. A permit holder 40 yards away fired ten rounds, killing him."
+    validations:
+      required: true
+
+  - type: input
+    id: source1
+    attributes:
+      label: Source 1 — URL
+      description: The page you actually read. Not an aggregator list.
+      placeholder: "https://apnews.com/article/..."
+    validations:
+      required: true
+
+  - type: input
+    id: source2
+    attributes:
+      label: Source 2 — URL (optional but required for tier C)
+      placeholder: "https://www.cnn.com/..."
+
+  - type: dropdown
+    id: capture
+    attributes:
+      label: Did you file a capture for any gated source?
+      description: If a source is paywalled, blocked, print or broadcast, a PDF/screenshot is mandatory.
+      options:
+        - "Not needed — all sources are public and open"
+        - "Yes — I ran scripts/capture_source.py"
+        - "Yes — I captured manually (scan/photo/screenshot)"
+        - "No — a source is gated and I have not captured it yet"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I opened every source I listed and it says what I claim it says.
+          required: true
+        - label: I am not the person who will mark this record verified.
+          required: true
+        - label: I checked whether the intervener was off-duty police or professional security.
+          required: true

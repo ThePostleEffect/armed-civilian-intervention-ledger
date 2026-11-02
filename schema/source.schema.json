@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ACI source record",
+  "description": "One row = one source for one incident. THE RULE: a source must be checkable later, so it needs a URL or a filed capture. Gated sources (paywalled, blocked, print, broadcast) require a filed capture. See docs/source-archiving.md.",
+  "type": "object",
+  "required": ["source_id", "incident_id", "relationship", "source_type", "tier", "access"],
+  "additionalProperties": false,
+  "properties": {
+    "source_id": { "type": "string", "pattern": "^S[0-9]{4}$" },
+    "incident_id": { "type": "string", "description": "Must exist in data/cases.csv" },
+    "relationship": { "enum": ["primary", "corroborating", "contradicting"] },
+    "source_type": {
+      "enum": ["court_record", "police_report", "prosecutor_statement", "coroner_report", "nibrs_extract",
+               "official_dataset", "news_contemporaneous", "news_retrospective", "broadcast",
+               "secondary_compilation", "social_post", "other"]
+    },
+    "publisher": { "type": "string" },
+    "title": { "type": "string" },
+    "url": { "type": "string", "description": "Live link. Optional ONLY if captured_file is present." },
+    "archive_url": { "type": "string", "description": "Wayback snapshot URL (web.archive.org/web/...). Strongly expected for any live web source." },
+    "captured_file": {
+      "type": "string",
+      "description": "Path under captures/, e.g. captures/S0037_2026-11-02_scan.jpg. Required when access is not 'public'."
+    },
+    "captured_at": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "access": { "enum": ["public", "paywalled", "blocked", "offline_print", "broadcast"] },
+    "tier": {
+      "enum": ["A", "B", "C", "D", "E"],
+      "description": "A=primary record; B=official dataset; C=two independent contemporaneous news; D=single news; E=secondary compilation (never publishable)"
+    },
+    "notes": { "type": "string", "maxLength": 400 }
+  },
+  "allOf": [
+    { "anyOf": [ { "required": ["url"] }, { "required": ["captured_file"] } ],
+      "description": "URL or capture — one of the two is mandatory" }
+  ]
+}

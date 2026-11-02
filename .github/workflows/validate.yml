@@ -1,0 +1,45 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ledger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate cases and sources
+        run: python scripts/validate.py data/cases.csv data/sources.csv
+
+      - name: Check every capture referenced actually exists
+        run: |
+          python - <<'PY'
+          import csv, os, sys
+          missing = []
+          for s in csv.DictReader(open("data/sources.csv", encoding="utf-8")):
+              cap = (s.get("captured_file") or "").strip()
+              if cap and not os.path.exists(cap):
+                  missing.append(f'{s["source_id"]}: {cap}')
+          if missing:
+              print("\n".join(missing)); sys.exit(1)
+          print("all referenced captures present on disk")
+          PY
+
+      - name: Report tier counts
+        run: |
+          python - <<'PY'
+          import csv, collections
+          c = list(csv.DictReader(open("data/cases.csv", encoding="utf-8")))
+          s = list(csv.DictReader(open("data/sources.csv", encoding="utf-8")))
+          print("cases:", len(c), "| sources:", len(s))
+          print("confidence:", dict(sorted(collections.Counter(r["confidence"] for r in c).items())))
+          print("status:", dict(sorted(collections.Counter(r["status"] for r in c).items())))
+          print("captured sources:", sum(1 for r in s if r.get("captured_file")))
+          print("archived sources:", sum(1 for r in s if r.get("archive_url")))
+          PY
