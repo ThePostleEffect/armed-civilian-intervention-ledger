@@ -26,7 +26,11 @@ The distinction matters practically. A dataset assembled to prove a conclusion i
 | Confidence D — candidate | **9** | Single verified news source each; 1996–2013 sweep; second source required to promote |
 | Confidence E — candidate | **242** | Secondary compilation only (CPRC list). Unverified, not publishable, awaiting upgrade |
 | Excluded | **1** | Duplicate caught by the validator |
-| Source rows | **267** | Every incident has at least one; 4 captured and archived so far |
+| Source rows | **267** | Every incident has at least one; 266 filed as PDF, 265 archived to Wayback |
+
+### Where our own data is weak
+
+267 source rows resolve to **12 unique URLs**. The entire 2014–2025 block rests on a single aggregator page — which is exactly the weakness this project exists to fix, sitting in our own file. It is stated here rather than buried because a dataset that hides its weakest link has stopped being evidence and become a press release.
 
 **First job of the project: upgrade the 242.** Each needs a primary or contemporaneous source before it can be counted. Expect a meaningful share to fail — that is the point of the exercise, and the failure rate is itself a finding.
 

@@ -56,7 +56,7 @@ def render(browser, url, pdf_path):
            f"--user-data-dir={tmp}", "--virtual-time-budget=12000",
            "--no-pdf-header-footer", f"--print-to-pdf={pdf_path}", url]
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=90)
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=150)
         return os.path.exists(pdf_path) and os.path.getsize(pdf_path) > 1000
     except Exception as e:
         print("  render failed:", e)
@@ -108,10 +108,38 @@ def main(argv):
             print(__doc__); return 1
         todo = [r for r in rows if r["source_id"] in ids]
 
-    n = 0
+    # Reuse a capture that already exists for the same URL (another row may have archived it).
+    existing = {}
+    for r in rows:
+        if r.get("captured_file"):  # only a real file counts; an archive link alone is not a capture
+            existing.setdefault((r.get("url") or "").strip(), r)
+
+    # Group by unique URL: a shared aggregator page must be fetched once, not once per record.
+    groups = {}
     for r in todo:
-        if capture(rows, r, browser, do_archive="--no-archive" not in argv):
+        groups.setdefault((r.get("url") or "").strip(), []).append(r)
+    print(f"{len(todo)} source rows -> {len(groups)} unique URLs")
+
+    n = 0
+    for url, grp in groups.items():
+        if url in existing:
+            src = existing[url]
+            for r in grp:
+                r["captured_file"] = src.get("captured_file", "")
+                r["archive_url"] = src.get("archive_url", "")
+                r["captured_at"] = src.get("captured_at", "")
+            print(f"reused existing capture for {len(grp)} row(s): {url[:70]}")
             n += 1
+            continue
+        lead = grp[0]
+        if capture(rows, lead, browser, do_archive="--no-archive" not in argv):
+            n += 1
+            for other in grp[1:]:
+                other["captured_file"] = lead.get("captured_file", "")
+                other["archive_url"] = lead.get("archive_url", "")
+                other["captured_at"] = lead.get("captured_at", "")
+            if len(grp) > 1:
+                print(f"  applied to {len(grp)} source rows sharing this URL")
 
     fields = list(rows[0].keys())
     with open(SRC, "w", newline="", encoding="utf-8") as f:
